@@ -1,0 +1,32 @@
+name: Elixir CI
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Erlang/OTP + Elixir
+      id: setup-beam
+      uses: erlef/setup-beam@v1
+      with:
+        otp-version: '24.0'
+        elixir-version: '1.14'
+    # - name: Restore dependencies cache
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: deps
+    #     key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+    #     restore-keys: ${{ runner.os }}-mix-
+    - name: Install dependencies
+      run: mix deps.get
+    - name: Run tests
+      run: mix test
